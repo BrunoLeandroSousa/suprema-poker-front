@@ -22,10 +22,6 @@ function HeaderApp() {
         headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' }
       };
 
-      if(axios == undefined){
-        router.push('/login');
-      }
-      
       await axios.get(
         `https://suprema-poker-api.herokuapp.com/showuserid/${session.user.id}`, 
         axiosConfig
@@ -52,10 +48,10 @@ function HeaderApp() {
               <Link href="/login/">
                 <a>Login</a>
               </Link>
-              <Link href="/madeTransaction/">
+              <Link href="/madetransaction/">
                 <a>TRANSFERÊNCIA</a>
               </Link>
-              <Link href="/myAccount/">
+              <Link href="/myaccount/">
                 <a>minha conta</a>
               </Link>
             </HeaderMenu>
