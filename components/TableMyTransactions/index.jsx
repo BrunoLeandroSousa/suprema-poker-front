@@ -85,7 +85,7 @@ function TableTransactions() {
     const axiosConfig = {
       headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' }
     };
-    
+    /*teste*/
     (async function setTransactions(){
       await axios.get(
         `https://suprema-poker-api.herokuapp.com/receivedtransactions/${session.user.id}`, 
