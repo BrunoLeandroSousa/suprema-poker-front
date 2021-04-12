@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/madeTransaction/index.jsx", "components/TableMadeTransactions/index.jsx", "pages/dashboard/index.tsx"  ],
+, "pages/madeTransaction/index.jsx", "components/TableMadeTransactions/index.jsx", "pages/dashboard/index.tsx", "components/TableMyTransactions/index.jsx"  ],
   "exclude": [
     "node_modules"
   ]

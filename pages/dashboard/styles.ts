@@ -61,7 +61,7 @@ export const HeaderMenu = styled.div`
 `;
 
 export const Options = styled.section`
-    width: 50%;
+    width: 25%;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;

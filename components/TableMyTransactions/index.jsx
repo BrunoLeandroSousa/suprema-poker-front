@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios'
-import { TableMyTransactions } from './styles';
 import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { formatPrice } from '../../utils/format';
@@ -12,6 +11,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { Button } from '@material-ui/core';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -37,9 +37,27 @@ const useStyles = makeStyles({
   },
 });
 
+const saldoDivStyles = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginLeft: '10rem',
+  backgroundColor: 'green',
+  color: 'white',
+  padding: '1rem',
+  borderRadius: '0.4rem',
+}
+
+const saldoNumberStyles = {
+  fontSize: '2rem',
+  margin: '0rem'
+}
+
 function TableTransactions() {
   const [myTransactions, setMyTransactions] = useState([]);
-
+  const [saldo, setSaldo] = useState([]);
+  
   useEffect(() => {
     const sessionLocal = localStorage.getItem('session');
     const session = JSON.parse(sessionLocal);
@@ -47,15 +65,40 @@ function TableTransactions() {
       headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' }
     };
 
-    /* puxando transações recebidas */
-    (async function setTransactions(){
+    (async function setTransactionsAndSaldo(){
       await axios.get(
-        `http://localhost:3333/receivedtransactions/${session.user.id}`, 
+        `https://suprema-poker-api.herokuapp.com/receivedtransactions/${session.user.id}`, 
         axiosConfig
       ).then(response=>setMyTransactions(response.data))
       .catch( error=> toast.error('verifique se o email ja foi cadastrado, cpf utilizado ou nome.'));
+
+      await axios.get(
+        `https://suprema-poker-api.herokuapp.com/showuserid/${session.user.id}`, 
+        axiosConfig
+      ).then(response=>setSaldo(response.data.saldo))
     })();
-  },[myTransactions]);
+  },[]);
+
+  const refreshTransactions = ()=>{
+    const sessionLocal = localStorage.getItem('session');
+    const session = JSON.parse(sessionLocal);
+    const axiosConfig = {
+      headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' }
+    };
+    
+    (async function setTransactions(){
+      await axios.get(
+        `https://suprema-poker-api.herokuapp.com/receivedtransactions/${session.user.id}`, 
+        axiosConfig
+      ).then(response=>setMyTransactions(response.data))
+      .catch( error=> toast.error('verifique se o email ja foi cadastrado, cpf utilizado ou nome.'));
+
+      await axios.get(
+        `https://suprema-poker-api.herokuapp.com/showuserid/${session.user.id}`, 
+        axiosConfig
+      ).then(response=>setSaldo(response.data.saldo))
+    })();
+  }
 
   const classes = useStyles();
 
@@ -63,6 +106,21 @@ function TableTransactions() {
     <>
       <ToastContainer/>
       <TableContainer style={{maxWidth: '50rem', margin: '0 auto'}}component={Paper}>
+        <div style={{display:'flex'}}>
+          <Button 
+          variant="contained" 
+          color="secondary" 
+          onClick={()=>refreshTransactions()}
+          > 
+          Atualizar transações
+          </Button>
+          
+          <div style={saldoDivStyles}>
+            saldo 
+            <p style={saldoNumberStyles}>{formatPrice(saldo)}</p> 
+          </div>
+        </div>
+        
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
             <TableRow>

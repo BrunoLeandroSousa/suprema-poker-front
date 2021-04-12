@@ -14,6 +14,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { useRouter } from 'next/router'
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -41,24 +42,40 @@ const useStyles = makeStyles({
 
 function TableTransactions() {
   const [myTransactions, setMyTransactions] = useState([]);
-  const [buttonDisabled, setButtonDisabled] = useState(false);
-
-  useEffect( async () => {
+  const router = useRouter();
+  useEffect(() => {
     const sessionLocal = localStorage.getItem('session');
     const session = JSON.parse(sessionLocal);
     const axiosConfig = {
       headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' }
     };
 
-    /* puxando transações recebidas */
+    if(axios == undefined){
+      router.push('/login');
+    }
+
+    (async function setTransactions(){
+      await axios.get(
+        `https://suprema-poker-api.herokuapp.com/madetransactions/${session.user.id}`, 
+        axiosConfig
+      ).then(response=>setMyTransactions(response.data))
+      .catch( error=> toast.error('Você não recebeu nenhuma transação ainda'));
+    })();
+  },[]);
+
+  async function setTransactions(){
+    const sessionLocal = localStorage.getItem('session');
+    const session = JSON.parse(sessionLocal);
+    const axiosConfig = {
+      headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' }
+    };
+
     await axios.get(
-      `http://localhost:3333/madetransactions/${session.user.id}`, 
+      `https://suprema-poker-api.herokuapp.com/madetransactions/${session.user.id}`, 
       axiosConfig
     ).then(response=>setMyTransactions(response.data))
     .catch( error=> toast.error('Você não recebeu nenhuma transação ainda'));
-
-    setButtonDisabled(true);
-  },[myTransactions]);
+  }
 
   const deleteTransaction = async (transactioId)=>{
     const sessionLocal = localStorage.getItem('session');
@@ -67,12 +84,11 @@ function TableTransactions() {
       headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' }
     };
     await axios.delete(
-    `http://localhost:3333/canceltransaction/${transactioId}`, 
+    `https://suprema-poker-api.herokuapp.com/canceltransaction/${transactioId}`, 
       axiosConfig
     ).then(res=>{
     }).catch(error=>toast.error(error));
-
-    setButtonDisabled(false);
+    await setTransactions()
   } 
 
   const classes = useStyles();
@@ -84,7 +100,7 @@ function TableTransactions() {
             <Table className={classes.table} aria-label="customized table">
               <TableHead>
                 <TableRow>
-                  <StyledTableCell align="left">playerId</StyledTableCell>
+                  <StyledTableCell align="left">Você</StyledTableCell>
                   <StyledTableCell align="left">valor da transação</StyledTableCell>
                   <StyledTableCell align="left">data da transaferência</StyledTableCell>
                   <StyledTableCell align="left"></StyledTableCell>
@@ -101,7 +117,6 @@ function TableTransactions() {
                       <Button
                         onClick={()=>deleteTransaction(transaction.id)}
                         variant="contained" color="secondary"
-                        style={{ display: (buttonDisabled ? 'block' : 'none'), marginTop: '1rem' }}
                       >
                         Deletar transação
                       </Button>

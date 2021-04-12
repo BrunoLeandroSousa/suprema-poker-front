@@ -14,31 +14,32 @@ function HeaderApp() {
   const [viewTransactions, setViewTransactions] = useState('myTransactions'); 
   const router = useRouter();
   
-  useEffect( async () => {
-    const sessionLocal = localStorage.getItem('session');
-    const session = JSON.parse(sessionLocal);
-    const axiosConfig = {
-      headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' }
-    };
+  useEffect(() => {
+    (async () => {
+      const sessionLocal = localStorage.getItem('session');
+      const session = JSON.parse(sessionLocal);
+      const axiosConfig = {
+        headers: { Authorization: `Bearer ${session.token}`, 'Content-Type': 'application/json' }
+      };
 
-    await axios.get(
-      `https://suprema-poker-api.herokuapp.com/showuserid/${session.user.id}`, 
-      axiosConfig
-    ).then(response=>setInfoPlayer(response.data))
-    .catch( error=> router.push('/login'));
-  }, [infoPlayer]);
+      if(axios == undefined){
+        router.push('/login');
+      }
+      
+      await axios.get(
+        `https://suprema-poker-api.herokuapp.com/showuserid/${session.user.id}`, 
+        axiosConfig
+      ).then(response=>setInfoPlayer(response.data))
+      .catch( error=> router.push('/login'));
+    })();
+  }, []);
 
-  const selectViewTransactions = () =>{
-    if(viewTransactions=='myTransactions'){
-      return(
-        <MyTransactions/>
-      )
+  const selectViewTransactions = () => {
+    if(viewTransactions==='myTransactions'){
+      return <MyTransactions/>
     }
-    else{
-      return(
-        <MadeTransaction/>
-      )
-    }
+
+    return <MadeTransaction/>
   }
 
   return (
@@ -49,10 +50,13 @@ function HeaderApp() {
             <img src="/logo-suprema.png" alt=""/>
             <HeaderMenu>
               <Link href="/login/">
-                <a>MINHA-CONTA</a>
+                <a>Login</a>
               </Link>
               <Link href="/madeTransaction/">
                 <a>TRANSFERÊNCIA</a>
+              </Link>
+              <Link href="/myAccount/">
+                <a>minha conta</a>
               </Link>
             </HeaderMenu>
           </HeaderItens>
@@ -64,10 +68,6 @@ function HeaderApp() {
           <Button variant="contained" color="primary" onClick={()=>setViewTransactions('transactionsMade')} className="transactions_Made">
             <p> Transações Feitas</p>
           </Button>
-          <div >
-            <p>SALDO</p>
-            <p>{formatPrice(infoPlayer.saldo)}</p>
-          </div>
         </Options>
       </Container>
       {selectViewTransactions()}

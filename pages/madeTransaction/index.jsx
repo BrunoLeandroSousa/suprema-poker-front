@@ -48,7 +48,6 @@ function MadeTransaction() {
     }).catch(error=> toast.error('Cpf não cadastrado ou voce não tem saldo o suficiente'));
   }
   
-
   const paperStyle = {
     padding: 40, 
     width:350, 
@@ -74,9 +73,6 @@ function MadeTransaction() {
     marginTop: '2rem'
   }
 
-  const hiddeButton = (e)=>{
-
-  }
   return (
     <Grid>
       <ToastContainer/>
