@@ -48,10 +48,10 @@ function HeaderApp() {
               <Link href="/login/">
                 <a>Login</a>
               </Link>
-              <Link href="/madetransaction/">
+              <Link href="/madeTransaction/">
                 <a>TRANSFERÊNCIA</a>
               </Link>
-              <Link href="/myaccount/">
+              <Link href="/myAccount/">
                 <a>minha conta</a>
               </Link>
             </HeaderMenu>
