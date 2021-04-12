@@ -32,7 +32,7 @@ function MadeTransaction() {
 
     /*minha requisição de login*/
     await axios.post(
-      'http://localhost:3333/createtransaction',
+      'https://suprema-poker-api.herokuapp.com/createtransaction',
       { 
         playerTransactionOwner: session.user.id,
         destinyPlayerCpf:formData.cpf,

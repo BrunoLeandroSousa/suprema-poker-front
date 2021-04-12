@@ -22,7 +22,7 @@ function HeaderApp() {
     };
 
     await axios.get(
-      `http://localhost:3333/showuserid/${session.user.id}`, 
+      `https://suprema-poker-api.herokuapp.com/showuserid/${session.user.id}`, 
       axiosConfig
     ).then(response=>setInfoPlayer(response.data))
     .catch( error=> router.push('/login'));
